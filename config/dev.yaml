@@ -1,0 +1,12 @@
+grpc:
+  server:
+    addr: "localhost:40005"
+    protocol: "tcp"
+etcd:
+  addrs:
+    - "localhost:13317"
+redis:
+  addr: "localhost:13322"
+kafka:
+  addrs:
+    - "localhost:9094"
