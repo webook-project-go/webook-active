@@ -14,17 +14,21 @@ import (
 	"github.com/webook-project-go/webook-active/service"
 )
 
+import (
+	_ "github.com/webook-project-go/webook-active/config"
+)
+
 // Injectors from wire.go:
 
 func InitApp() *App {
 	client := ioc.InitEtcd()
 	grpcxServer := ioc.InitGrpcServer(client)
 	cmdable := ioc.InitRedis()
-	redisClient := redis.New(cmdable)
+	logger := ioc.InitLogger()
+	redisClient := redis.New(cmdable, logger)
 	serviceService := service.New(redisClient)
 	grpcService := grpc.New(serviceService)
 	saramaClient := ioc.InitKafka()
-	logger := ioc.InitLogger()
 	v := ioc.InitConsumer(saramaClient, logger, serviceService)
 	app := &App{
 		Server:    grpcxServer,

@@ -11,6 +11,7 @@ type Service interface {
 	IsActive(ctx context.Context, uid int64) (bool, error)
 	GetLastActiveAt(ctx context.Context, uid int64) (int64, error)
 	GetActiveUsers(ctx context.Context, since, limit int64) ([]int64, error)
+	ActiveFilters(ctx context.Context, uids ...int64) ([]int64, error)
 }
 
 type service struct {
@@ -19,6 +20,9 @@ type service struct {
 
 func New(client redis.Client) Service {
 	return &service{client: client}
+}
+func (s *service) ActiveFilters(ctx context.Context, uids ...int64) ([]int64, error) {
+	return s.client.ActiveFilters(ctx, uids)
 }
 func (s *service) MarkActive(ctx context.Context, users []domain.User) error {
 	return s.client.SetActive(ctx, users)
